@@ -5,14 +5,14 @@ using UnityEngine;
 [RequireComponent(typeof(CircleCollider2D))]
 public class BananaSpawnPoint : MonoBehaviour
 {
-    public event Action<Transform> PlayerEntered;
-
     private Banana _banana;
     private int _delayTime = 1000;
 
+    public event Action<Transform> PlayerEntered;
+
     public void TakeBanana(Banana banana)
     {
-        if (banana.GetComponent<Transform>().position == transform.position)
+        if (banana.transform.position == transform.position)
             _banana = banana;
     }
 

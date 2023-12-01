@@ -52,12 +52,12 @@ public class Skin : MonoBehaviour
     private void PlayRunAnimation()
     {
         _isRunning = true;
-        _animator.SetBool("isRunning", _isRunning);
+        _animator.SetBool(SkinAminator.IsRunning, _isRunning);
     }
 
     private void PlayIdleAnimation()
     {
         _isRunning = false;
-        _animator.SetBool("isRunning", _isRunning);
+        _animator.SetBool(SkinAminator.IsRunning, _isRunning);
     }
 }

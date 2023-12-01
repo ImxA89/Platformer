@@ -12,7 +12,7 @@ public class BananaSpawner : MonoBehaviour
     private SpawnPointCollector _collector;
     private Coroutine _spawnRoutine;
     private float _minSpawnDelayTime = 1f;
-    bool _isSpawnRoutineWorking = false;
+    private bool _isSpawnRoutineWorking = false;
 
     private void OnValidate()
     {

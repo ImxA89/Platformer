@@ -6,25 +6,20 @@ public class SpawnPointCollector : MonoBehaviour
 {
     [SerializeField] private Transform _spawnPointPerent;
 
-    private List<Transform> _spawnPoints;
+    private List<BananaSpawnPoint> _spawnPoints;
+    private Transform _tempSpawnPoint;
 
     public event Action<Transform> PointFreed;
 
-    public void TakeNewBanana(Banana newBanana)
-    {
-        foreach (Transform point in _spawnPoints)
-            if (point.position == newBanana.GetComponent<Transform>().position)
-                point.GetComponent<BananaSpawnPoint>().TakeBanana(newBanana);
-    }
-
     private void Start()
     {
-        _spawnPoints = new List<Transform>(_spawnPointPerent.childCount);
+        _spawnPoints = new List<BananaSpawnPoint>();
 
         for (int i = 0; i < _spawnPointPerent.childCount; i++)
         {
-            _spawnPointPerent.GetChild(i).GetComponent<BananaSpawnPoint>().PlayerEntered += BananaTaken;
-            _spawnPoints.Add(_spawnPointPerent.GetChild(i));
+            _tempSpawnPoint = _spawnPointPerent.GetChild(i);
+            _spawnPoints.Add(_tempSpawnPoint.GetComponent<BananaSpawnPoint>());
+            _tempSpawnPoint.GetComponent<BananaSpawnPoint>().PlayerEntered += BananaTaken;
         }
 
         SendAllPoints();
@@ -32,8 +27,15 @@ public class SpawnPointCollector : MonoBehaviour
 
     private void OnDisable()
     {
-        foreach (Transform spawnPoint in _spawnPoints)
-            spawnPoint.GetComponent<BananaSpawnPoint>().PlayerEntered -= BananaTaken;
+        foreach (BananaSpawnPoint spawnPoint in _spawnPoints)
+            spawnPoint.PlayerEntered -= BananaTaken;
+    }
+
+    public void TakeNewBanana(Banana newBanana)
+    {
+        foreach (BananaSpawnPoint point in _spawnPoints)
+            if (point.transform.position == newBanana.transform.position)
+                point.TakeBanana(newBanana);
     }
 
     private void BananaTaken(Transform spawnPoint)
@@ -43,7 +45,7 @@ public class SpawnPointCollector : MonoBehaviour
 
     private void SendAllPoints()
     {
-        foreach (Transform spawnPoint in _spawnPoints)
-            PointFreed?.Invoke(spawnPoint);
+        foreach (BananaSpawnPoint spawnPoint in _spawnPoints)
+            PointFreed?.Invoke(spawnPoint.transform);
     }
 }
