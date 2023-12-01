@@ -9,7 +9,7 @@ public class Bag : MonoBehaviour
 
     private void Awake()
     {
-        _player = gameObject.GetComponent<Player>();
+        _player = GetComponent<Player>();
     }
 
     private void OnEnable()
