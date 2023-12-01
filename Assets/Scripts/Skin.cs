@@ -1,11 +1,11 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Player))]
+[RequireComponent(typeof(PlayerMovement))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Animator))]
 public class Skin : MonoBehaviour
 {
-    private Player _player;
+    private PlayerMovement _player;
     private Animator _animator;
     private SpriteRenderer _spriteRenderer;
 
@@ -14,7 +14,7 @@ public class Skin : MonoBehaviour
 
     private void Awake()
     {
-        _player = GetComponent<Player>();
+        _player = GetComponent<PlayerMovement>();
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
