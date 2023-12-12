@@ -15,6 +15,7 @@ public class InputListener : MonoBehaviour
     {
         ListenMove();
         ListenJump();
+        ListenAttack();
     }
 
     private void ListenMove()
@@ -33,5 +34,11 @@ public class InputListener : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
             _contolable.Jump();
+    }
+
+    private void ListenAttack()
+    {
+        if (Input.GetKeyDown(KeyCode.W))
+            _contolable.Attack();
     }
 }

@@ -1,63 +1,48 @@
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerMovement))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Animator))]
 public class Skin : MonoBehaviour
 {
-    private PlayerMovement _player;
     private Animator _animator;
     private SpriteRenderer _spriteRenderer;
 
     private bool _isRunning;
-    private bool _isMovingLeft;
+    private bool _isLookingLeft = false;
+
+    public bool IsLookingLeft => _isLookingLeft;
 
     private void Awake()
     {
-        _player = GetComponent<PlayerMovement>();
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    private void OnEnable()
+    public void Turn(bool isMovingLeft)
     {
-        _player.DirectionTaken += OnTakenDirection;
+        _isLookingLeft=isMovingLeft;
+        _spriteRenderer.flipX = isMovingLeft;
     }
 
-    private void OnDisable()
+    public void PlayDamageTakenAnimation()
     {
-        _player.DirectionTaken -= OnTakenDirection;
+        _animator.SetTrigger(SkinAminator.TakeDamage);
     }
 
-    private void OnTakenDirection(Vector2 direction)
-    {
-        if (direction.x == 0)
-        {
-            PlayIdleAnimation();
-        }
-        else if (direction.x > 0)
-        {
-            PlayRunAnimation();
-            _isMovingLeft = false;
-            _spriteRenderer.flipX = _isMovingLeft;
-        }
-        else
-        {
-            PlayRunAnimation();
-            _isMovingLeft = true;
-            _spriteRenderer.flipX = _isMovingLeft;
-        }
-    }
-
-    private void PlayRunAnimation()
+    public void PlayRunAnimation()
     {
         _isRunning = true;
         _animator.SetBool(SkinAminator.IsRunning, _isRunning);
     }
 
-    private void PlayIdleAnimation()
+    public void PlayIdleAnimation()
     {
         _isRunning = false;
         _animator.SetBool(SkinAminator.IsRunning, _isRunning);
+    }
+
+    public void PlayAttackeAnimation()
+    {
+        _animator.SetTrigger(SkinAminator.Attack);
     }
 }

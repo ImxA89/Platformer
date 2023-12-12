@@ -31,7 +31,7 @@ public class BananaSpawner : MonoBehaviour
     {
         _collector.PointFreed -= OnSpawnPointFreed;
 
-        if (_isSpawnRoutineWorking)
+        if (_isSpawnRoutineWorking && _spawnRoutine != null)
             StopCoroutine(_spawnRoutine);
     }
 

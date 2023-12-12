@@ -18,7 +18,7 @@ public class BananaSpawnPoint : MonoBehaviour
 
     private async void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponentInParent<Player>() != null)
+        if (collision.TryGetComponent<Player>(out Player player))
         {
             await Task.Delay(_delayTime);
 

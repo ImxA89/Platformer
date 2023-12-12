@@ -1,59 +1,81 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))]
-public class Enemy : MonoBehaviour
+[RequireComponent(typeof(Skin))]
+public class Enemy : MonoBehaviour, IAttackable
 {
-
     [SerializeField] private Transform[] _points;
-    [SerializeField] private uint _speed;
+    [SerializeField] private int _speed;
+    [SerializeField] private int _maxHealth;
+    [SerializeField] private int _damage;
 
-    private SpriteRenderer _spriteRenderer;
-    private int _currentTargetIndex = 0;
-    private float _reachingDistance = 0.3f;
-    private bool _isMovingLeft;
+    private EnemyStateMachine _enemyStateChanger;
+    private EnemyMover _mover;
+    private Skin _skin;
+    private Health _health;
+    private DamageDealler _damageDealler;
+    private Transform _target;
+    private int _playerLayer = 7;
 
-    private void Start()
+    public Transform Target => _target;
+
+    private void OnValidate()
     {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        if(_maxHealth <010)
+            _maxHealth = 10;
+
+        if(_damage <1)
+            _damage = 1;
+
+        if(_speed <1)
+            _speed = 1;
+    }
+
+    private void Awake()
+    {
+        _skin = GetComponent<Skin>();
+        _mover = new EnemyMover(transform);
+        _health = new Health(_maxHealth);
+        _damageDealler = new DamageDealler(_damage, _playerLayer);
+        _enemyStateChanger = new EnemyStateMachine();
+
+        _enemyStateChanger.AddState(new EnemyAttackState(_skin,_enemyStateChanger,_damageDealler, this));
+        _enemyStateChanger.AddState(new EnemyTakeDamageState(_skin,_enemyStateChanger));
+        _enemyStateChanger.AddState(new EnemyFollowState(_enemyStateChanger,_skin,_mover,this,_speed));
+        _enemyStateChanger.AddState(new EnemyPatrolState(_points, this, _skin,_mover,_playerLayer,_speed,_enemyStateChanger));
+
+        _enemyStateChanger.SetStateByDefault();
+    }
+
+    private void OnEnable()
+    {
+        _health.Died += OnDied;
+    }
+
+    private void OnDisable()
+    {
+        _health.Died -= OnDied;
+        _enemyStateChanger.OnDisable();
     }
 
     private void Update()
     {
-        Move();
-
-        if (FindOutTargetReached())
-            ChangeTarget();
+        _enemyStateChanger.Update();
     }
 
-    private void Move()
+    public void TakeTarget(Transform newTarget)
     {
-        transform.position = Vector3.MoveTowards(transform.position, _points[_currentTargetIndex].position, _speed * Time.deltaTime);
-
-        if (transform.position.x < _points[_currentTargetIndex].position.x)
-        {
-            _isMovingLeft = false;
-            _spriteRenderer.flipX = _isMovingLeft;
-        }
-        else
-        {
-            _isMovingLeft = true;
-            _spriteRenderer.flipX = _isMovingLeft;
-        }
+        _target = newTarget;
     }
 
-    private bool FindOutTargetReached()
+    public void TakeDamage(int damage)
     {
-        bool isReached = false;
-
-        if (Vector2.Distance(_points[_currentTargetIndex].position, transform.position)<_reachingDistance)
-            isReached = true;
-
-        return isReached;
+        _enemyStateChanger.SetState(typeof(EnemyTakeDamageState));
+        _health.TakeDamage(damage);
     }
 
-    private void ChangeTarget()
+    private void OnDied()
     {
-        _currentTargetIndex++;
-        _currentTargetIndex %= _points.Length;
+        Destroy(gameObject);
     }
 }
