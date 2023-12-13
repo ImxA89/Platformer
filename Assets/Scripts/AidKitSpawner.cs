@@ -15,7 +15,7 @@ public class AidKitSpawner : MonoBehaviour
             _aidKitSpawnPoints[i] = _aidKitSpawnPointPerent.GetChild(i).transform;
     }
 
-    void Start()
+    private void Start()
     {
         for (int i = 0; i < _aidKitSpawnPoints.Length; i++)
             Instantiate(_aidKitPrefab, _aidKitSpawnPoints[i].position, Quaternion.identity);

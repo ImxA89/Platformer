@@ -1,13 +1,12 @@
-using System.Threading.Tasks;
 using UnityEngine;
 
 [RequireComponent(typeof(Skin))]
 public class Enemy : MonoBehaviour, IAttackable
 {
     [SerializeField] private Transform[] _points;
-    [SerializeField] private int _speed;
-    [SerializeField] private int _maxHealth;
-    [SerializeField] private int _damage;
+    [SerializeField][Min(2)] private int _speed;
+    [SerializeField][Min(10)] private int _maxHealth;
+    [SerializeField][Min(2)] private int _damage;
 
     private EnemyStateMachine _enemyStateChanger;
     private EnemyMover _mover;
@@ -18,18 +17,6 @@ public class Enemy : MonoBehaviour, IAttackable
     private int _playerLayer = 7;
 
     public Transform Target => _target;
-
-    private void OnValidate()
-    {
-        if(_maxHealth <010)
-            _maxHealth = 10;
-
-        if(_damage <1)
-            _damage = 1;
-
-        if(_speed <1)
-            _speed = 1;
-    }
 
     private void Awake()
     {

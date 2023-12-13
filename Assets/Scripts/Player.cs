@@ -4,8 +4,8 @@ using UnityEngine;
 [RequireComponent(typeof(Skin))]
 public class Player : MonoBehaviour, IAttackable
 {
-    [SerializeField] private int _maxHealth;
-    [SerializeField] private int _damage;
+    [SerializeField][Min(2)] private int _maxHealth;
+    [SerializeField][Min(2)] private int _damage;
 
     private Health _health;
     private DamageDealler _damageDealler;
@@ -13,15 +13,6 @@ public class Player : MonoBehaviour, IAttackable
     private int _enemyLayer = 6;
 
     public event Action BananaTaken;
-
-    private void OnValidate()
-    {
-        if(_maxHealth <= 0)
-            _maxHealth = 1;
-
-        if (_damage <= 0)
-            _damage = 1;
-    }
 
     private void Awake()
     {
