@@ -24,7 +24,7 @@ public class EnemyStateMachine
 
     public void SetState(Type type)
     {
-        if (_currentState?.GetType() == type)
+        if (_currentState?.GetType() == type || _currentState?.GetType() == typeof(EnemyDieState))
             return;
 
         if (_states.TryGetValue(type, out IEnemyState newState))

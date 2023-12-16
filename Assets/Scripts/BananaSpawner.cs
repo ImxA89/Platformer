@@ -48,8 +48,11 @@ public class BananaSpawner : MonoBehaviour
 
     private void StartSpawnCoroutine()
     {
-        _isSpawnRoutineWorking = true;
-        StartCoroutine(Spawn());
+        if (enabled)
+        {
+            _isSpawnRoutineWorking = true;
+            StartCoroutine(Spawn());
+        }
     }
 
     private IEnumerator Spawn()
@@ -58,7 +61,7 @@ public class BananaSpawner : MonoBehaviour
         Transform freePoint;
         Banana newBanana;
 
-        while (_pointsForSpawn.Count > 0)
+        while (enabled && _pointsForSpawn.Count > 0)
         {
             freePoint = GetRandomFreeSpwanPoint(_pointsForSpawn);
             newBanana = Instantiate(_bananaPrefab, freePoint.position, Quaternion.identity);

@@ -26,8 +26,8 @@ public class GameObjectOfTypeDrawer : PropertyDrawer
     private void CheckDragAndDrop(Rect position, Type requiredType)
     {
        if (position.Contains(Event.current.mousePosition)) 
-        { 
-            var draggedObjectCount = DragAndDrop.objectReferences.Length;
+        {
+            int draggedObjectCount = DragAndDrop.objectReferences.Length;
 
             for (int i = 0; i < draggedObjectCount; i++)
             {

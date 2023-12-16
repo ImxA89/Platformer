@@ -4,7 +4,7 @@ using UnityEngine;
 public class EnemyDieState : IEnemyState
 {
     private GameObject _enemy;
-    private int _destroyDelay = 100;
+    private int _destroyDelay = 200;
 
     public EnemyDieState (GameObject enemy)
     {
