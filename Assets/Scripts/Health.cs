@@ -11,6 +11,7 @@ public class Health
         _currentHealth = maxHealth;
     }
 
+    public event Action<int> HealthChanged;
     public event Action Died;
 
     public void TakeDamage(int damage)
@@ -20,8 +21,13 @@ public class Health
 
         _currentHealth -= damage;
 
-        if (_currentHealth < 0)
+        if (_currentHealth <= 0)
+        {
             Died?.Invoke();
+            _currentHealth = 0;
+        }
+
+        HealthChanged?.Invoke(_currentHealth);
     }
 
     public void TakeHeal(int healPower)
@@ -33,5 +39,7 @@ public class Health
 
         if (_currentHealth > _maxHealth)
             _currentHealth = _maxHealth;
+
+        HealthChanged?.Invoke(_currentHealth);
     }
 }

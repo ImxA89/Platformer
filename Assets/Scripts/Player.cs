@@ -12,7 +12,10 @@ public class Player : MonoBehaviour, IAttackable
     private Skin _skin;
     private int _enemyLayer = 6;
 
+    public int MaxHealth => _maxHealth;
+
     public event Action BananaTaken;
+    public event Action<int> HealthChanged;
 
     private void Awake()
     {
@@ -24,11 +27,13 @@ public class Player : MonoBehaviour, IAttackable
     private void OnEnable()
     {
         _health.Died += OnDied;
+        _health.HealthChanged += OnHealthChanged;
     }
 
     private void OnDisable()
     {
         _health.Died -= OnDied;
+        _health.HealthChanged -= OnHealthChanged;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -46,6 +51,11 @@ public class Player : MonoBehaviour, IAttackable
         }
     }
 
+    public void TakeHeal(int healPower)
+    {
+            _health.TakeHeal(healPower);
+    }
+
     public void TakeDamage(int damage)
     {
         _skin.PlayDamageTakenAnimation();
@@ -60,5 +70,10 @@ public class Player : MonoBehaviour, IAttackable
     private void OnDied()
     {
         Destroy(gameObject);
+    }
+
+    private void OnHealthChanged(int currentHealth)
+    {
+        HealthChanged?.Invoke(currentHealth);
     }
 }

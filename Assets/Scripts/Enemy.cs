@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Skin))]
@@ -18,6 +19,10 @@ public class Enemy : MonoBehaviour, IAttackable
 
     public Transform Target => _target;
 
+    public int MaxHealth => _maxHealth;
+
+    public event Action<int> HealthChanged;
+
     private void Awake()
     {
         _skin = GetComponent<Skin>();
@@ -30,6 +35,7 @@ public class Enemy : MonoBehaviour, IAttackable
         _enemyStateChanger.AddState(new EnemyTakeDamageState(_skin,_enemyStateChanger));
         _enemyStateChanger.AddState(new EnemyFollowState(_enemyStateChanger,_skin,_mover,this,_speed));
         _enemyStateChanger.AddState(new EnemyPatrolState(_points, this, _skin,_mover,_playerLayer,_speed,_enemyStateChanger));
+        _enemyStateChanger.AddState(new EnemyDieState(gameObject));
 
         _enemyStateChanger.SetStateByDefault();
     }
@@ -37,12 +43,14 @@ public class Enemy : MonoBehaviour, IAttackable
     private void OnEnable()
     {
         _health.Died += OnDied;
+        _health.HealthChanged += OnHealthChanged;
     }
 
     private void OnDisable()
     {
         _health.Died -= OnDied;
         _enemyStateChanger.OnDisable();
+        _health.HealthChanged -= OnHealthChanged;
     }
 
     private void Update()
@@ -63,6 +71,11 @@ public class Enemy : MonoBehaviour, IAttackable
 
     private void OnDied()
     {
-        Destroy(gameObject);
+        _enemyStateChanger.SetState(typeof(EnemyDieState));
+    }
+
+    private void OnHealthChanged(int currentHealth)
+    {
+        HealthChanged?.Invoke(currentHealth);
     }
 }
